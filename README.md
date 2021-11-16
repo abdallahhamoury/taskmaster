@@ -3,19 +3,19 @@
 ####  building an Android app that contains:
 
 1. Homepage
-it should have a heading at the top of the page, an image to mock the “my tasks” view, and buttons at the bottom of the page to allow going to the “add tasks” and “all tasks” page.
+   it should have a heading at the top of the page, an image to mock the “my tasks” view, and buttons at the bottom of the page to allow going to the “add tasks” and “all tasks” page.
 
-![Home Page](screenshots/homePage.PNG)
+![Home Page](../../../Desktop/taskmaster-lab28/screenshots/homePage.PNG)
 
 2. Add a Task
-allow users to type in details about a new task, specifically a title and a body. When users click the “submit” button, show a “submitted!” label on the page.
+   allow users to type in details about a new task, specifically a title and a body. When users click the “submit” button, show a “submitted!” label on the page.
 
-![Add a Task](screenshots/addtaskPage.PNG)
+![Add a Task](../../../Desktop/taskmaster-lab28/screenshots/addtaskPage.PNG)
 
 3. All Tasks
-should just be an image with a back button; it needs no functionality.
+   should just be an image with a back button; it needs no functionality.
 
-![All Tasks](screenshots/allTaskesPage.PNG)
+![All Tasks](../../../Desktop/taskmaster-lab28/screenshots/allTaskesPage.PNG)
 ### Lab: 27 - Data in TaskMaster
 1. Homepage
 
@@ -23,13 +23,13 @@ The main page should be modified to contain three different buttons with hardcod
 
 The homepage should also contain a button to visit the Settings page, and once the user has entered their username, it should display “{username}’s tasks” above the three task buttons.
 
-![Home Page](screenshots/homePagelab27.PNG)
+![Home Page](../../../Desktop/taskmaster-lab28/screenshots/homePagelab27.PNG)
 
 4. Detail page
-Create a Task Detail page. It should have a title at the top of the page, and a Lorem Ipsum description.
+   Create a Task Detail page. It should have a title at the top of the page, and a Lorem Ipsum description.
 
-![Detail page](screenshots/detailPage.PNG)
+![Detail page](../../../Desktop/taskmaster-lab28/screenshots/detailPage.PNG)
 
 5. Settings page
-Create a Settings page. It should allow users to enter their username and hit save.
-![Settings page](screenshots/settingNew.PNG)
+   Create a Settings page. It should allow users to enter their username and hit save.
+   ![Settings page](../../../Desktop/taskmaster-lab28/screenshots/settingNew.PNG)
