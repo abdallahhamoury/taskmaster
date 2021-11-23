@@ -1,5 +1,6 @@
 package com.example.taskmaster;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -8,11 +9,21 @@ import androidx.room.Room;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.TaskMaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +34,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+////////////////////////////////
+        try {
+            // Add these lines to add the AWSApiPlugin plugins
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i("MyAmplifyApp", "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
+        }
+        /////////////////////////////////////////////////
 
         Button addTaskButton=findViewById(R.id.buttonADDTASK);
         addTaskButton.setOnClickListener(new View.OnClickListener() {
@@ -114,20 +136,64 @@ public class MainActivity extends AppCompatActivity {
         String userNameString=sharedPreferences.getString("userName","user");
         TextView userNameView=findViewById(R.id.viewUserNameId);
         userNameView.setText(userNameString);
+
         //show the data from dataBase lab29//
+
+        //get RecyclerView by id
+//        RecyclerView allTaskRecuclerView=findViewById(R.id.taskRecyclerView);
+        // get database name it as in add task taskDatabase
+//        DatabaseTask db =  Room.databaseBuilder(getApplicationContext(), DatabaseTask.class, "taskDatabase").allowMainThreadQueries()
+//                .build();
+        //get doa function
+//        TaskDao taskDao = db.taskDao();
+        //store the all data from database in array
+//        List<TaskClass> task = taskDao.getAll();
+        //set layout which it is the main
+//        allTaskRecuclerView.setLayoutManager(new LinearLayoutManager(this));
+        //set Adapter and pass to it the object
+//        allTaskRecuclerView.setAdapter(new TaskAdapter(task));
+
+
+//         show from amplify from log lab32
+
         //get RecyclerView by id
         RecyclerView allTaskRecuclerView=findViewById(R.id.taskRecyclerView);
-        // get database name it as in add task taskDatabase
-        DatabaseTask db =  Room.databaseBuilder(getApplicationContext(), DatabaseTask.class, "taskDatabase").allowMainThreadQueries()
-                .build();
-        //get doa function
-        TaskDao taskDao = db.taskDao();
-        //store the all data from database in array
-        List<TaskClass> task = taskDao.getAll();
+
+        ///handler promise to wait and get data from amplify
+        Handler handler =new Handler(Looper.getMainLooper(), new Handler.Callback() {
+            @Override
+            public boolean handleMessage(@NonNull Message msg) {
+                allTaskRecuclerView.getAdapter().notifyDataSetChanged();
+                return false;
+            }
+        });
+        //make arraylist to store all data
+        ArrayList<TaskMaster> alltaskFromamplify=new ArrayList<TaskMaster>();
         //set layout which it is the main
         allTaskRecuclerView.setLayoutManager(new LinearLayoutManager(this));
-        //set Adapter and pass to it the object
-        allTaskRecuclerView.setAdapter(new TaskAdapter(task));
+        //set Adapter and pass to it the object and edit adapter to fit new model
+        allTaskRecuclerView.setAdapter(new TaskAdapter(alltaskFromamplify));
+
+
+        /// use amplify list to get data
+        Amplify.API.query(
+                ModelQuery.list(TaskMaster.class),
+                response -> {
+                    ///looping through data to render it
+                    for (TaskMaster taskMaster : response.getData()) {
+                        Log.i("MyAmplifyApp", taskMaster.getTaskTitle());
+                        Log.i("MyAmplifyApp", taskMaster.getTaskBody());
+                        Log.i("MyAmplifyApp", taskMaster.getTaskState());
+                        ///add new data to array
+                        alltaskFromamplify.add(taskMaster);
+
+                    }
+                    //handel promise and wait to get all data
+                    handler.sendEmptyMessage(1);
+                    Log.i("MyAmplifyApp", "outsoid the loop");
+                },
+                error -> Log.e("MyAmplifyApp", "Query failure", error)
+        );
 
     }
 
